@@ -1,0 +1,15 @@
+// Un exemple de fichier de test, pour tester la bonne prise en compte
+// d'une indisoponibilité de personne
+
+// -> La solution doit placer la session s1 la 2nde journée.
+
+ 
+jours			2
+
+creneaux 		4
+
+session s1		3    assistant
+indisponible	assistant 1
+
+
+

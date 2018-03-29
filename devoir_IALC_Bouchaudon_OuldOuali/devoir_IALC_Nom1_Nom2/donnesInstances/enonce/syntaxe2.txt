@@ -1,0 +1,18 @@
+// quelques exemples de lignes illustrant la syntaxe décrivant les données
+// telles qu'elles figurent dans l'énoncé
+
+salle  studio1 5
+salle  studio2 8
+salle  grandeScene 50
+
+besoinSpecifique grandeScene generale-1 generale-2 
+
+indisponible assistant 3,5 
+indisponible metteurEnScene  4,10-15 
+
+indisponible studio1 1-15  3 4
+indisponible studio1 21
+indisponible grandeScene 5,8-16,18-20 
+
+indemnite 100 0 0 marieDupuy josetteAfert etienneDor camilleSaurel
+indemnite 120 200 80  victorRide

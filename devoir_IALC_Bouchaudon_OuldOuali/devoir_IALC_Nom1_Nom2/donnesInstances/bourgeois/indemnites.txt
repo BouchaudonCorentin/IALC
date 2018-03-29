@@ -1,0 +1,17 @@
+// --- Indemnités ----
+
+indemnite 180 150 90				alexJourdain
+indemnite 120 0  0					sophieRenard francoisDrumel
+indemnite 120 75  60				louisDorant
+indemnite 90  30  60				jeanSapide
+indemnite 90    0  0				lucieEstrade anneKlos
+indemnite 75  50  60				ernestBridec vincentValse
+indemnite 75   0  0					rolandCresse elisePiard LeoCouprin
+indemnite 75 70   60				antoineSabre
+
+indemnite 50 0 0					ericLegallo arnaudDain lucVillaret
+
+indemnite 60  20  60				olivierSoupir yannBemol claraNote lucasRin guyMarin
+indemnite 50   0  0 				olivierDaude olivierDaude joanKlein victorTressac
+indemnite 150 0   0					stephaneRoc
+indemnite 100 80 60				    eugeneCollins

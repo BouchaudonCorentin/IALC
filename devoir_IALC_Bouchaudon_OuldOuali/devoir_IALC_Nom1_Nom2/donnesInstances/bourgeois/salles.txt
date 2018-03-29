@@ -1,0 +1,8 @@
+
+// -------------------- salles pour les répétition --------------------
+
+salle studio1	8
+salle studio2   12
+salle grandeScene 100
+
+

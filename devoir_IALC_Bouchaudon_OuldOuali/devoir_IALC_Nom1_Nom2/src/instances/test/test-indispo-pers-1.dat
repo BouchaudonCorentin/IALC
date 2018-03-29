@@ -1,0 +1,9 @@
+// Lancer depuis le répertoire src
+// Un test  pour vérifier que les indisponibilités de personnes sont bien prises 
+// en compte
+
+nom = 	"test-indispo-pers-1";
+fichiersDonnees = {
+	"../donneesInstances/tests/2j-4c-1s-1ind-p.txt"
+};
+

@@ -1,0 +1,16 @@
+// Instance construite sur la structure de la pièce du Bourgeois Gentillomme
+
+ nom = "bourgeois1";
+
+ fichiersDonnees = {
+	"../donneesInstances/bourgeois/cal-23-4.txt",
+	"../donneesInstances/bourgeois/blocs.txt",
+	"../donneesInstances/bourgeois/sessions.txt",
+	"../donneesInstances/bourgeois/indispoPersonnes.txt",
+	"../donneesInstances/bourgeois/salles.txt",
+	"../donneesInstances/bourgeois/besoins.txt",
+	"../donneesInstances/bourgeois/indispoSalles.txt",
+	"../donneesInstances/bourgeois/distribution.txt",
+	"../donneesInstances/bourgeois/indemnites.txt"
+};
+

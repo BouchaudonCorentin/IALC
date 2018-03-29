@@ -1,0 +1,136 @@
+// ------- groupes de comediens et/ou interprètes	------- 
+
+bloc troisMusiciens Musicien1 Musicien2	Musicienne
+
+bloc deuxViolons Violon1 Violon2					
+
+bloc quatreDanseurs Danseur1 Danseur2	Danseur3 Danseur4
+
+bloc deuxLaquais Laquais1 Laquais2					
+
+// -------------------- Acte 1 --------------------
+bloc a1-scene1-txt	MaitreDeMusique EleveMusique MaitreADanser
+bloc a1-scene1 		a1-scene1-txt troisMusiciens	deuxViolons	quatreDanseurs
+
+bloc a1-scene2-txt	MrJourdain MaitreADanser MaitreDeMusique deuxLaquais troisMusiciens
+bloc a1-scene2		a1-scene2-txt deuxViolons	quatreDanseurs
+
+bloc acte1-txt 		a1-scene1-txt a1-scene2-txt
+bloc acte1			a1-scene1 a1-scene2
+
+// -------------------- Acte 2 --------------------
+
+bloc a2-scene1		MrJourdain MaitreDeMusique MaitreADanser Laquais1	
+
+bloc a2-scene2-txt	MaitreDArmes MrJourdain MaitreDeMusique MaitreADanser 
+bloc a2-scene2 		a2-scene2-txt deuxLaquais
+
+bloc a2-scene3-txt	MaitreDePhilosophie MaitreDArmes MaitreDeMusique MaitreADanser MrJourdain
+bloc a2-scene3		a2-scene3-txt deuxLaquais
+
+bloc a2-scene4		MaitreDePhilosophie	MrJourdain Laquais2
+					
+bloc a2-scene5		MaitreTailleur GarçonTailleur MrJourdain 
+
+bloc acte2-s1-3-txt	a2-scene1 a2-scene2-txt a2-scene3-txt
+bloc acte2-s1-3 	a2-scene1 a2-scene2  a2-scene3 
+bloc acte2-s4-5		a2-scene4 a2-scene5
+
+bloc acte2-txt		acte2-s1-3-txt a2-scene4 a2-scene5
+bloc acte2			a2-scene1 a2-scene2 a2-scene3 a2-scene4 a2-scene5
+
+// -------------------- Acte 3 --------------------
+
+bloc a3-scene1		MrJourdain Laquais1 
+
+bloc a3-scene2		Nicole a3-scene1 
+									
+bloc a3-scene3		MmeJourdain  a3-scene2				
+
+bloc a3-scene4		Dorante  MrJourdain MmeJourdain Nicole
+
+bloc a3-scene5		Dorante MmeJourdain Nicole
+
+bloc a3-scene6		a3-scene4
+
+bloc a3-scene7		MmeJourdain Nicole
+
+bloc a3-scene8		Cléonte Covielle Nicole
+
+bloc a3-scene9		Cléonte Covielle		
+	
+bloc a3-scene10		Lucile a3-scene8
+	
+bloc a3-scene11		MmeJourdain a3-scene8
+
+bloc a3-scene12		MrJourdain a3-scene11
+
+bloc a3-scene13		a3-scene9		    
+
+bloc a3-scene14		MrJourdain Laquais2
+
+bloc a3-scene15		Dorimène Dorante Laquais2
+
+bloc a3-scene16-txt		MrJourdain	a3-scene15
+c bloc a3-scene16-intermede	sixCuisiners (ignoré par simplicité)
+bloc a3-scene16		a3-scene16-txt
+
+bloc acte3-s1-7		a3-scene1 a3-scene2 a3-scene3 a3-scene4 a3-scene5 a3-scene6 a3-scene7
+bloc acte3-s8-10	a3-scene8 a3-scene9 a3-scene10
+bloc acte3-s11-16	a3-scene11 a3-scene12 a3-scene13 a3-scene14 a3-scene15 a3-scene16
+
+bloc acte3			acte3-s1-7 acte3-s8-10 acte3-s11-16
+
+// -------------------- Acte 4 --------------------
+bloc a4-scene1-txt	Dorante Dorimène MrJourdain troisMusiciens
+bloc a4-scene1		a4-scene1-txt deuxLaquais
+
+bloc a4-scene2-txt	MmeJourdain Dorante MrJourdain Dorimène
+bloc a4-scene2		a4-scene2-txt troisMusiciens deuxLaquais
+
+bloc a4-scene3		Covielle MrJourdain
+	
+bloc a4-scene4		Cléonte	a4-scene3
+
+bloc a4-scene5-txt	Dorante Covielle
+c bloc a4-scene5-ceremonie-turque	 LeMufti quatreDervis sixTurcsDansant sixTurcsMusiciens autresJoueursDInstruments  (pour simplifier on ignore la ceremonie)
+
+bloc a4-scene5 		a4-scene5-txt 
+
+bloc acte4-txt		a4-scene1-txt a4-scene2-txt a4-scene2 a4-scene4 a4-scene5
+
+bloc acte4-s1-2-txt	a4-scene1-txt a4-scene2-txt
+bloc acte4-s3-5-txt	a4-scene3 a4-scene4 a4-scene5-txt 
+
+bloc acte4		a4-scene1 a4-scene2 a4-scene3 a4-scene4 a4-scene5
+
+
+// -------------------- Acte 5 --------------------
+
+bloc a5-scene1	MmeJourdain MrJourdain
+
+bloc a5-scene2	Dorante Dorimène
+
+bloc a5-scene3	MrJourdain Dorante Dorimène
+
+bloc a5-scene4-txt	Dorante MrJourdain Covielle Cléonte  
+bloc a5-scene4 		a5-scene4-txt Dorimène
+
+bloc a5-scene5-txt Lucile MrJourdain 
+bloc a5-scene5	a5-scene5-txt Dorante Dorimène Covielle Cléonte 
+
+
+bloc a5-scene6-txt	MmeJourdain MrJourdain Dorante Dorimène Lucile Covielle
+c  bloc a5-scene6-ballet (pour simplifier on ignore le ballet final)
+bloc a5-scene6 		a5-scene6-txt Cléonte
+
+bloc acte5-s1-3	 a5-scene1 a5-scene2 a5-scene3
+bloc acte5-s4-6-txt	 a5-scene4-txt a5-scene5-txt a5-scene6-txt
+bloc acte5-s4-6	 a5-scene4 a5-scene5 a5-scene6
+
+bloc acte5 		 acte5-s1-3 acte5-s4-6
+
+// -------------------- Piece complete --------------------
+
+bloc	pieceComplete-txt acte1-txt acte2-txt acte3 acte4 acte5
+bloc	pieceComplete acte1 acte2 acte3 acte4 acte5

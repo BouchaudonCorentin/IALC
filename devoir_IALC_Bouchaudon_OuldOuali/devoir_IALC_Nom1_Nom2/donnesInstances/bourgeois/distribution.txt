@@ -1,0 +1,49 @@
+// ------- comediens et interprètes	------- 
+bloc MrJourdain						alexJourdain
+bloc MmeJourdain					sophieRenard
+		(femme de Mr Jourdain)		
+bloc Lucile							elisePiard
+		(fille de Mr Jourdain)
+bloc Nicole							lucieEstrade
+		(servante)
+bloc Cléonte						jeanSapide
+		(amoureux de Lucile)
+bloc Covielle						francoisDrumel
+		(valet de Cléonte)
+bloc Dorante						louisDorant
+		(comte, amant de Dorimène)
+bloc Dorimène						anneKlos
+		(marquise)
+bloc MaitreDeMusique				ernestBridec
+bloc EleveMusique					ericLegallo
+bloc MaitreADanser					vincentValse
+bloc MaitreDArmes					antoineSabre
+bloc MaitreDePhilosophie			rolandCresse
+bloc MaitreTailleur					leoCouprin
+bloc GarçonTailleur					miloSize
+bloc Laquais1						arnaudDain
+bloc Laquais2						lucVillaret
+
+// ---  Musiciens ----------
+bloc Musicien1						olivierSoupir
+bloc Musicien2						yannBemol
+bloc Musicienne						claraNote
+bloc Violon1						lucasRin
+bloc Violon2						guyMarin
+
+// ---  Danseurs ----------
+bloc Danseur1						olivierDaude	
+bloc Danseur2						martinFortage
+bloc Danseur3						joanKlein
+bloc Danseur4						victorTressac
+
+// ---  Autres Figurants ----------
+// ignorés pour simplifier
+//	cuisiniers, 
+//	garçons tailleurs, 
+//	et autres personnages des intermèdes et du ballet.
+
+// ---  Autres Intervenants ----------
+
+bloc metteurEnScene					stephaneRoc
+bloc assistant						eugeneCollins

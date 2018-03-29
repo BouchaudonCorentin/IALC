@@ -1,0 +1,115 @@
+
+// -------------------- sessions de répétition --------------------
+// Remarques : pour alléger  un peu le coût, certaines session 
+// ne font intervenir que les artistes ayant du texte à dire et excluent
+// ceux qui sont de simples figurants, dont la présence n'est requise
+// que dans les répétitions ultérieures
+
+// ------ Sessions acte 1
+
+session acte1-txt-repet1		1 assistant acte1-txt  
+session acte1-txt-repet2		1 metteurEnScene acte1-txt
+
+session acte1-repet1			1 assistant acte1
+session acte1-repet2			1 metteurEnScene assistant acte1
+
+precede acte1-txt-repet1 acte1-txt-repet2  	2
+precede acte1-txt-repet2 acte1-repet1  		1
+
+precede acte1-repet1 acte1-repet2  			1
+
+// ------ Sessions acte 2
+
+session acte2-s1-3-txt-repet1  	1 assistant  acte2-s1-3-txt
+session acte2-s1-3-repet2	  	1 assistant  acte2-s1-3
+
+precede acte2-s1-3-txt-repet1 acte2-s1-3-repet2 2
+
+session acte2-s4-5-repet1  		2 metteurEnScene acte2-s4-5
+session acte2-s4-5-repet2  		1 assistant acte2-s4-5
+
+precede acte2-s4-5-repet1 acte2-s4-5-repet2 3
+
+session acte2-repet1  			1 metteurEnScene assistant acte2
+session acte2-repet2  			1 metteurEnScene acte2
+
+precede acte2-s1-3-repet2 acte2-repet1		 
+precede acte2-s4-5-repet1 acte2-repet1		2
+precede acte2-repet1 acte2-repet2	1	 
+
+// ------ Sessions acte 3
+
+session acte3-s1-7-repet1   	2 assistant acte3-s1-7
+session acte3-s1-7-repet2   	2 metteurEnScene acte3-s1-7
+
+precede acte3-s1-7-repet1 acte3-s1-7-repet2 3
+
+session acte3-s8-10-repet1  	2 metteurEnScene acte3-s8-10
+session acte3-s8-10-repet2  	1 assistant acte3-s8-10
+
+precede acte3-s8-10-repet1 acte3-s8-10-repet2 2
+
+session acte3-s11-16-repet1  	2 assistant acte3-s11-16
+session acte3-s11-16-repet2  	1 metteurEnScene acte3-s11-16
+
+precede acte3-s11-16-repet1 acte3-s11-16-repet2 3
+
+session acte3-repet1  			2 metteurEnScene assistant acte3
+session acte3-repet2  			1 metteurEnScene acte3
+
+precede acte3-s1-7-repet2 acte3-repet1
+precede acte3-s8-10-repet2 acte3-repet1
+precede acte3-s11-16-repet2 acte3-repet1 1
+precede acte3-repet1 acte3-repet2	2
+
+// ------ Sessions acte 4
+
+session acte4-s1-2-repet1   	2 assistant acte4-s1-2-txt
+session acte4-s1-2-repet2   	1 metteurEnScene acte4-s1-2-txt
+
+precede acte4-s1-2-repet1 acte4-s1-2-repet2 2
+
+session acte4-s3-5-repet1  		2 metteurEnScene acte4-s3-5-txt
+session acte4-s3-5-repet2  		1 assistant acte4-s3-5-txt
+
+precede acte4-s3-5-repet1 acte4-s3-5-repet2 2
+
+session acte4-repet1  			2 assistant acte4
+session acte4-repet2  			1 metteurEnScene assistant acte4
+
+precede acte4-s1-2-repet2 acte4-repet1 
+precede acte4-s3-5-repet2 acte4-repet1 
+precede acte4-repet1 acte4-repet2 	2
+precede acte4-repet1 acte4-repet2	2
+
+// ------ Sessions acte 5
+
+session acte5-s1-3-repet1   	1 metteurEnScene acte5-s1-3
+session acte5-s4-6-repet1   	1 assistant acte5-s4-6-txt
+session acte5-s4-6-repet2   	1 metteurEnScene acte5-s4-6
+
+session acte5-repet1  			2 metteurEnScene assistant acte5
+session acte5-repet2  			1 metteurEnScene acte5
+
+precede acte5-s4-6-repet1 acte5-s4-6-repet2 2 
+precede acte5-s1-3-repet1 acte5-repet1 
+precede acte5-s4-6-repet2 acte5-repet1 
+precede acte5-repet1 acte5-repet2 2
+
+// ------ Sessions piece 
+
+session filage1   				3 metteurEnScene assistant pieceComplete-txt
+session filage2   				3 metteurEnScene assistant pieceComplete
+session filage3   				2 metteurEnScene assistant pieceComplete
+session generale   				2 metteurEnScene assistant pieceComplete
+
+precede acte1-repet2  filage1 
+precede acte2-repet2  filage1 
+precede acte3-repet2  filage1 
+precede acte4-repet2  filage1 
+precede acte5-repet2  filage1 
+precede filage1 filage2 2
+precede filage2 filage3 1
+precede filage3 generale 
+
+

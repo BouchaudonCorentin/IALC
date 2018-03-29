@@ -1,0 +1,7 @@
+// Lancer depuis le répertoire src
+
+nom = 	"enonce1";
+fichiersDonnees = {
+	"../donneesInstances/enonce/syntaxe1.txt"
+};
+

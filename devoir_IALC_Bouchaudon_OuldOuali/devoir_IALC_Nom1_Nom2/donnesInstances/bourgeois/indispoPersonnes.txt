@@ -1,0 +1,7 @@
+// Indisponibilités du metteur en scene et de son assistant
+indisponible stephaneRoc  2,7-12,14,16
+indisponible eugeneCollins  1-2,8-9,15-16 1 2
+
+// Indisponibilités des artistes
+
+indisponible alexJourdain  2
