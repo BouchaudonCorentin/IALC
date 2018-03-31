@@ -20,7 +20,7 @@ les fichiers décrivant l'instance.
 */
 int nbJoursTotal;
 int nbCreneauxMaxparJour;
-int tailleListes = 99;//trouver avec quoi on peut le remplacer
+int tailleListes = 99;//trouver avec quoi on peut le remplacer car c'est moche
 
 { string } listeBlocs[0..tailleListes];
 tuple Bloc {
