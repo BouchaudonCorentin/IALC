@@ -1,6 +1,6 @@
 /************************
 * Devoir IALC 2017-18 - M1 Miage App 
-* Binome : Nom1 Nom2 	(TODO)
+* Binome : Bouchaudon OuldOuali 	
 *
 * Fonctions de script utiles pour la lecture des fichiers d'instance
 ************************/
@@ -11,40 +11,47 @@
 
 /* TODO */
 
-function getJours(){
-	var fin = new IloOplInputFile("../donneesInstances/bourgeois/cal-23-4.txt");
-	if (fin.exists){
-		var s;
-		var jours;
-		while (!fin.eof){
-			s=fin.readline();
-			coupe= s.split("	");
-			if (coupe[0]=='jours'){			
-				jours = parseInt(coupe[1]);				
+function recupererDonnees(fichiersDonnees){
+	var fichier = new IloOplInputFile();
+	var informations = new Array();
+	var i=0;
+	for (donnee in fichiersDonnees){
+		fichier.open(donnee);
+		if(fichier.isOpen){
+			while(!fichier.eof){
+				informations[i++]=fichier.readline();
 			}
+		}else{
+			writeln("problème avec un fichier");
 		}
-		fin.close();
-	}else {
-		writeln("fichier n'existe pas");
 	}
-	return jours;
-}
-function getCreneaux(){
-	var fin = new IloOplInputFile("../donneesInstances/bourgeois/cal-23-4.txt");
-	if (fin.exists){
-		var s;
-		var creneaux;
-		while (!fin.eof){
-			s=fin.readline();
-			coupe= s.split(" ");
-			if (coupe[0]=='creneaux'){			
-				creneaux = parseInt(coupe[1]);			
-			}
-		}
-		fin.close();
-	}else {
-		writeln("fichier n'existe pas");
-	}
-	return creneaux;
+	return informations;
+	
 }
 
+function supprimerEspaces(information){
+	var infosansEspace = new Array();
+	var debutMot = 0;
+	information += " ";
+	var i = 0
+	for (; i < information.length; i++){
+		if(isEspace(information.charCodeAt(i))){
+			infosansEspace[infosansEspace.length] = information.substring(debutMot, i);
+			while(i < information.length && isEspace(information.charCodeAt(++i)));// a modifier
+			debutMot = i;
+		}
+	}
+	return infosansEspace;
+}
+
+function isEspace(lettreOuSymbole){
+	var espaces = new Array(9, 10, 11, 12, 13, 32, 133, 160);
+	for(var i = 0; i < espaces.length; i++){
+		if(lettreOuSymbole == espaces[i]){
+			return true;
+		}
+	}
+	return false;
+}
+
+	
