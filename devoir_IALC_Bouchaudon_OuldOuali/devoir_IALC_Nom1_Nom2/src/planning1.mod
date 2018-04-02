@@ -18,17 +18,16 @@ string nom = ...;
 Déclaration des structures de données utiles pour lire 
 les fichiers décrivant l'instance.
 */
-int nbJoursTotal;
-int nbCreneauxMaxparJour;
+int nbJoursMax;
+int nbCreneauxMaxParJour;
 int tailleListes = 99;//trouver avec quoi on peut le remplacer car c'est moche
 
-{ string } listeBlocs[0..tailleListes];
 tuple Bloc {
 	string idBloc;
 	{string} intervenants;
 }
 {Bloc} blocs;
-{string} listeSessions[0..tailleListes];
+
 tuple Session{
  	string idSession;
 	int duree;
@@ -43,24 +42,29 @@ tuple Precede{
 }
 {Precede} precedes;
 
-{int} listeCreneaux[0..tailleListes];
-{int} listeJours[0..tailleListes];
 tuple Indisponible{
 	string idIntervenant;
 	{int} jours;
 	{int} creneaux;
 }
-{Indisponible} indisponibles;
+{Indisponible}indisponibles;
+
 execute {  
 	includeScript("lectureInstance.js");	// Permet d'inclure un fichier de script
 	// TODO - appeler la fonction que vous aurez définie et 
 	// permettant de lire le contenu des fichiers décrivant l'instance, 
 	// pour alimenter les structures de données que vous jugez utiles	
-	var informations = recupererDonnees(fichiersDonnees);
-	var trueInformations = new Array();
-	for (var i = 0;i<informations.length;i++){
-		trueInformations[trueInformations.length++]=supprimerEspaces(informations[i]);
+	var informationsraw = recupererDonnees(fichiersDonnees);
+	var donnees = new Array();
+	for (var i = 0;i<informationsraw.length;i++){
+		donnees[donnees.length++]=supprimerEspaces(informationsraw[i]);
 	}
+	nbJoursMax = getJours(donnees);
+	nbCreneauxMaxParJour=getCreneaux(donnees);
+	getBlocs(donnees,blocs);
+    getSessions(donnees, sessions);
+	getPrecedes(donnees, precedes);
+	getIndisponibles(donnees, indisponibles);
 }
 
 /************************************************************************
