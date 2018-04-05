@@ -48,7 +48,8 @@ tuple Indisponible{
 	{int} creneaux;
 }
 {Indisponible}indisponibles;
-
+{int}listCrenaux[0..24];
+{int}listJours[0..30];
 execute {  
 	includeScript("lectureInstance.js");	// Permet d'inclure un fichier de script
 	// TODO - appeler la fonction que vous aurez définie et 
@@ -64,7 +65,7 @@ execute {
 	getBlocs(donnees,blocs);
     getSessions(donnees, sessions);
 	getPrecedes(donnees, precedes);
-	getIndisponibles(donnees, indisponibles);
+	getIndisponibles(donnees, indisponibles,listJours,listCrenaux);
 }
 
 /************************************************************************

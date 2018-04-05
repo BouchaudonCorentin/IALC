@@ -107,49 +107,38 @@ function getSessions(donnees, sessions){
 function getPrecedes(donnees, precedes){
 	for (var i = 0; i<donnees.length;i++){	
 			if(donnees[i][0] == "precedes") {
-				sessions.add(donnees[i][1],donnees[i][2],parseInt(donnee[i][3]));				
+				precedes.add(donnees[i][1],donnees[i][2],parseInt(donnee[i][3]));				
 			}
 	}
 	
 }
-function getIndisponibles(donnees, indisponibles){//a refaire fonction bidon 
+function getIndisponibles(donnees, indisponibles, listJours, listCreneaux){//obliger de mettre list jours et list creneaux car sans je n'arrivais pas à retourner le tuple
+	var cpt =0.
     for(var i = 0; i < donnees.length; i++){
-		var joursnondisponible = new Array();
-		var intervallenondisponible =new Array();
-		var creneauxnondisponible = new Array();
-		var joursindispo = new Array();
-		var sansvirgule =new Array()
-		if(donnees[i][0] == "indisponible"){			
-			joursindispo = sansvirgule(donnees[i][2]);								
-			for (var j =0; j < joursindispo.length;j++){
-				if(joursindispo[j].indexOf("-")!=-1){
-					joursnondisponible.add(joursindispo[i]);
-				}else{
-					intervallenondisponible= joursindispo.split("-");
-					for (k = parseInt(intervallenondisponible[0]);k<parseInt(intervallenondisponible[1]);k++){
-						joursnondisponible.add(k);
+		var joursindispo=new Array();;//recupere le split pour les jours indispo			
+		if(donnees[i][0] == "indisponible"){		
+			joursindispo = (donnees[i][2]).split(",");	
+			for (var j=0; j<joursindispo.length;j++){ 
+				var sanstiret = (joursindispo[j]).split("-");
+				if (sanstiret.length!=1){
+					for (k = parseInt(sanstiret[0]);k<=parseInt(sanstiret[1]);k++){
+						listJours[cpt].add(k);		
 					}
+				}else{
+					listJours[cpt].add(parseInt(sanstiret[0]));
 				}
-			}					
-			if(donnees[i].length>3){				
-				for (var j =4; j<donnees.length;j++){
-					writeln("test");
-					creneauxnondisponible.add(parseInt(donnees[j]));
+			}	
+			if((donnees[i]).length>3){
+				for (var j =3; j<(donnees[i]).length;j++){
+					listCreneaux[cpt].add(parseInt(donnees[i][j]));
 				}						
+			}else{
+				listCreneaux[cpt].add(0);
 			}
-			
+			indisponibles.add(donnees[i][1],listJours[cpt],listCreneaux[cpt]);
+			cpt++;
 		}
-		//indisponibles.add((donnees[i][1]),joursnondisponible,creneauxnondisponible);
+
 	}	
 }
-function sansvirgule(ligne){
-	var lignesansvirgule = new Array();
-	var cpt=0;
-	for (var i = 0; i < ligne.length; i++){
-		if(ligne[i] == ","){ 
-			lignesansvirgule[lignesansvirgule.length] = ligne.substring(debutMot, i);
-			debutMot = i + 1;
-		}
-	}
-	return lignesansvirgule;
-}
+
