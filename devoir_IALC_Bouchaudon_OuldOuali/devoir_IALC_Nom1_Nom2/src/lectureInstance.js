@@ -70,26 +70,23 @@ function getCreneaux(donnees){
         }
         return -1;
 }
-function getBlocs(donnees, blocs){
-	var blocsIn; //blocs dans bloc
+function getBlocs(donnees, blocs, blocsIn){
 	var cpt =0;
 	for (var i = 0; i<donnees.length;i++){
-			blocsIn = new Array();
 			if(donnees[i][0] == "bloc") {
-				for (j = 2; j<donnees.length;j++){
+				for (j = 2; j<donnees[i].length;j++){
 					if(donnees[i][j]!=null){
-						blocsIn[j-2]=donnees[i][j];
+						blocsIn[cpt].add(donnees[i][j]);						
 					}
 				}
-				blocs.add(donnees[i][1],blocsIn);
-				cpt++;
+				blocs.add(donnees[i][1],blocsIn[cpt]);
+				cpt ++
 			}
 	}
 	
 }
 function getSessions(donnees, sessions){
 	var intervenants; //blocs dans bloc
-	var cpt =0;
 	for (var i = 0; i<donnees.length;i++){		
 			intervenants = new Array();
 			if(donnees[i][0] == "session") {
@@ -99,7 +96,6 @@ function getSessions(donnees, sessions){
 					}
 				}
 				sessions.add(donnees[i][1],donnees[i][2],intervenants);
-				cpt++;
 			}
 	}
 	
@@ -142,3 +138,22 @@ function getIndisponibles(donnees, indisponibles, listJours, listCreneaux){//obl
 	}	
 }
 
+function getIntervenants(blocs, listbloc, listIntervenants){
+	for (b in blocs){
+		for(b2 in listbloc){
+				if(b2==b.idBloc){					
+					getIntervenants(blocs, b.intervenants,listIntervenants);
+				}else{		
+					for(i2 in b.intervenants){
+						if(b2==i2){
+							listIntervenants.add(i2);
+						}
+					}
+				}
+		}
+	}
+	
+	
+	
+	
+}

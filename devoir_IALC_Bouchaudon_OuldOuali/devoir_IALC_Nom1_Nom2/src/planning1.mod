@@ -20,13 +20,13 @@ les fichiers décrivant l'instance.
 */
 int nbJoursMax;
 int nbCreneauxMaxParJour;
-int tailleListes = 99;//trouver avec quoi on peut le remplacer car c'est moche
 
 tuple Bloc {
 	string idBloc;
 	{string} intervenants;
 }
 {Bloc} blocs;
+{string}blocsIn[0..100];//100 est le nombre de bloc qu'il y a environ dans tout les fichiers
 
 tuple Session{
  	string idSession;
@@ -62,7 +62,7 @@ execute {
 	}
 	nbJoursMax = getJours(donnees);
 	nbCreneauxMaxParJour=getCreneaux(donnees);
-	getBlocs(donnees,blocs);
+	getBlocs(donnees,blocs,blocsIn);
     getSessions(donnees, sessions);
 	getPrecedes(donnees, precedes);
 	getIndisponibles(donnees, indisponibles,listJours,listCrenaux);
@@ -71,9 +71,68 @@ execute {
 /************************************************************************
 * Prétraitement sur les données de l'instance (si besoin)
 ************************************************************************/
+ 
+{string} codeDeSession = {s.idSession | s in sessions};
+{string} codeDeBloc = {b.idBloc | b in blocs};
+int dureeMinimaleSession = min(s in sessions)s.duree;
+int dureeMaximaleSession = max(s in sessions)s.duree;
 
-/* TODO 
-Déclaration des structures de données utiles pour faciliter
+
+{string} intervenantDuBloc[codeDeBloc];//recupere tout les intervenants mais interne au bloc
+{string} blocDuBloc[codeDeBloc];
+{string} temp1[codeDeBloc];
+execute{
+	//intervenantsParBloc récupere tout les intervenants 
+	var isbloc;
+	for (b in blocs){		
+		for (i in b.intervenants){
+			isbloc =false;
+			for(cb in codeDeBloc){				
+				if(i==cb){
+					blocDuBloc[b.idBloc].add(i);
+					isbloc =true;
+				}
+			}
+			if(isbloc ==false){
+				for(i2 in b.intervenants){
+					if(i==i2){						
+						intervenantDuBloc[b.idBloc].add(i2);
+						temp1[b.idBloc].add(i2);
+					}
+				}
+			}
+			
+		}	
+	}
+	for (b in blocs){
+		for(b2 in blocDuBloc){
+			for(i in blocDuBloc[b2]){
+				if(b2==b.idBloc){
+					getIntervenants(blocs,b.intervenants,intervenantDuBloc[b.idBloc]);
+					getIntervenants(blocs,b.intervenants,temp1[b.idBloc]);
+				}
+			}
+		}
+	}
+	for (b in temp1){
+		for(i in temp1[b]){
+			for(cb in codeDeBloc){
+				if(i==cb){
+					intervenantDuBloc[b].remove(i);
+				}
+			}
+		}
+	}
+	for (b in intervenantDuBloc){
+		writeln("////",b);		
+		for(i in intervenantDuBloc[b]){
+			writeln(i);
+		}	
+		writeln("******");
+	}
+
+}
+/*Déclaration des structures de données utiles pour faciliter
 l'expression du modèle
 */
 
@@ -82,7 +141,9 @@ l'expression du modèle
 * Variables de décision
 ************************************************************************/
 
-/* TODO */
+/*dvar int debutSession[codeSession] in 0..(nbJoursMax*nbCreneauxMaxParJour) - dureeMinimaleSession;
+dvar int finSession[codeSession] in dureeMinimaleSession..nbJoursMax*nbCreneauxMaxParJour;
+dvar int dureeTotaleSession in dureeMaximaleSession..nbJoursMax*nbCreneauxMaxParJour;*/
 
 /************************************************************************
 * Contraintes du modèle 					(NB : ne peut être mutualisé)
