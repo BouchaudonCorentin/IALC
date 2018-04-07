@@ -34,6 +34,7 @@ tuple Session{
 	{string} intervenants;
 }
 {Session} sessions;
+{string}listSessions[0..40];
 
 tuple Precede{
 	string idSession1;
@@ -63,7 +64,7 @@ execute {
 	nbJoursMax = getJours(donnees);
 	nbCreneauxMaxParJour=getCreneaux(donnees);
 	getBlocs(donnees,blocs,blocsIn);
-    getSessions(donnees, sessions);
+    getSessions(donnees, sessions,listSessions);
 	getPrecedes(donnees, precedes);
 	getIndisponibles(donnees, indisponibles,listJours,listCrenaux);
 }
@@ -76,13 +77,15 @@ execute {
 {string} codeDeBloc = {b.idBloc | b in blocs};
 int dureeMinimaleSession = min(s in sessions)s.duree;
 int dureeMaximaleSession = max(s in sessions)s.duree;
-
-
-{string} intervenantDuBloc[codeDeBloc];//recupere tout les intervenants mais interne au bloc
-{string} blocDuBloc[codeDeBloc];
-{string} temp1[codeDeBloc];
+{string} intervenantsDuBloc[codeDeBloc];//recupere tout les intervenants interne au bloc
+{string} blocDuBloc[codeDeBloc];//contient les blocs se situant dans le bloc
+{string} temp1[codeDeBloc]; // permet la modification de intervenantsDuBloc
+{string} intervenantsDeSession[codeDeSession];//recupere tout les intervenants à la session
 execute{
-	//intervenantsParBloc récupere tout les intervenants 
+
+	/*********************************************************
+	//intervenantsDuBloc récupere tout les intervenants par bloc 
+	**********************************************************/
 	var isbloc;
 	for (b in blocs){		
 		for (i in b.intervenants){
@@ -96,7 +99,7 @@ execute{
 			if(isbloc ==false){
 				for(i2 in b.intervenants){
 					if(i==i2){						
-						intervenantDuBloc[b.idBloc].add(i2);
+						intervenantsDuBloc[b.idBloc].add(i2);
 						temp1[b.idBloc].add(i2);
 					}
 				}
@@ -108,7 +111,7 @@ execute{
 		for(b2 in blocDuBloc){
 			for(i in blocDuBloc[b2]){
 				if(b2==b.idBloc){
-					getIntervenants(blocs,b.intervenants,intervenantDuBloc[b.idBloc]);
+					getIntervenants(blocs,b.intervenants,intervenantsDuBloc[b.idBloc]);
 					getIntervenants(blocs,b.intervenants,temp1[b.idBloc]);
 				}
 			}
@@ -118,20 +121,40 @@ execute{
 		for(i in temp1[b]){
 			for(cb in codeDeBloc){
 				if(i==cb){
-					intervenantDuBloc[b].remove(i);
+					intervenantsDuBloc[b].remove(i);
 				}
 			}
 		}
 	}
-	for (b in intervenantDuBloc){
-		writeln("////",b);		
-		for(i in intervenantDuBloc[b]){
-			writeln(i);
-		}	
-		writeln("******");
+	/*********************************************************
+	//intervenantsParSession récupere tout les intervenants par session 
+	**********************************************************/
+	for(s in sessions){
+		isbloc=false;
+		for (i in s.intervenants){
+			for(b in intervenantsDuBloc){
+				if(i==b){
+					isbloc=true;					
+					for(i2 in intervenantsDuBloc[b]){
+						intervenantsDeSession[s.idSession].add(i2);;
+					}
+				}
+			}
+			if(isbloc==false){
+				intervenantsDeSession[s.idSession].add(i)
+			}
+		}
 	}
-
+	for(s in intervenantsDeSession){
+		writeln("///////",s);
+		for( i in intervenantsDeSession[s]){
+			write(i,"   ");
+		}
+		writeln();
+		writeln("*********");
+	}
 }
+	
 /*Déclaration des structures de données utiles pour faciliter
 l'expression du modèle
 */

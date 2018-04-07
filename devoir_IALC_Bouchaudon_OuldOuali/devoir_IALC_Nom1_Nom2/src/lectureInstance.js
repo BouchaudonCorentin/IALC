@@ -85,17 +85,17 @@ function getBlocs(donnees, blocs, blocsIn){
 	}
 	
 }
-function getSessions(donnees, sessions){
-	var intervenants; //blocs dans bloc
-	for (var i = 0; i<donnees.length;i++){		
-			intervenants = new Array();
+function getSessions(donnees, sessions, listSessions){ 
+	var cpt=0;
+	for (var i = 0; i<donnees.length;i++){	
 			if(donnees[i][0] == "session") {
 				for (j = 3; j<donnees.length;j++){
 					if(donnees[i][j]!=null){
-						intervenants[j-3]=donnees[i][j];
+						listSessions[cpt].add(donnees[i][j]);
 					}
 				}
-				sessions.add(donnees[i][1],donnees[i][2],intervenants);
+				sessions.add(donnees[i][1],donnees[i][2],listSessions[cpt]);
+				cpt++;
 			}
 	}
 	
