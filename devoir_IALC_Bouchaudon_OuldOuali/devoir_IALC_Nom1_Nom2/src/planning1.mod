@@ -77,8 +77,6 @@ execute {
 {string} codeDeBloc = {b.idBloc | b in blocs};
 int dureeMinimaleSession = min(s in sessions)s.duree;
 int dureeMaximaleSession = max(s in sessions)s.duree;
-int sommeDureeSessions = sum(s in sessions)s.duree;//duree maximale du Projet
-int duree[codeDeSession] =[s.idSession : s.duree  | s in sessions];
 
 
 
@@ -86,6 +84,7 @@ int duree[codeDeSession] =[s.idSession : s.duree  | s in sessions];
 {string} blocDuBloc[codeDeBloc];//contient les blocs se situant dans le bloc
 {string} temp1[codeDeBloc]; // permet la modification de intervenantsDuBloc
 {string} intervenantsDeSession[codeDeSession];//recupere tout les intervenants à la session
+{int} sessionIndisponible[codeDeSession];
 execute{
 	/*********************************************************
 	//intervenantsDuBloc récupere tout les intervenants par bloc 
@@ -149,6 +148,29 @@ execute{
 			}
 		}
 	}
+	
+	/*********************************************************
+	//gestion de l'indisponibilité des personnes
+	**********************************************************/ 
+	for (s in intervenantsDeSession){
+		for (inter in intervenantsDeSession[s]){
+			for(indi in indisponibles){
+				if(indi.idIntervenant == inter){
+					for(j in indi.jours){
+						for(k in indi.creneaux){
+							if(k==0){// pas de creneaux en particulier
+								for (var creneau =0 ; creneau<nbCreneauxMaxParJour; creneau++){
+									sessionIndisponible[s].add(((j-1)*nbCreneauxMaxParJour)+creneau);
+								}
+							}else{
+								sessionIndisponible[s].add(((j-1)*nbCreneauxMaxParJour)+(k-1));
+							}							
+						}
+					}
+				}
+			}
+		}
+	}	
 }	
 
 /************************************************************************
@@ -156,34 +178,47 @@ execute{
 ************************************************************************/
 
 dvar int dureeTotaleInstance in dureeMaximaleSession..nbJoursMax*nbCreneauxMaxParJour;
-dvar interval s[cs in codeDeSession] in 0..sommeDureeSessions size duree[cs];
+dvar int debutSession[codeDeSession] in 0..(nbJoursMax*nbCreneauxMaxParJour) - dureeMinimaleSession;
+dvar int finSession[codeDeSession] in dureeMinimaleSession..nbJoursMax*nbCreneauxMaxParJour;
 /************************************************************************
 * Contraintes du modèle 					(NB : ne peut être mutualisé)
 ************************************************************************/
 
-minimize 
-	dureeTotaleInstance;
-	
-subject to {
+constraints {
 
-	dureeTotaleInstance == max (cds in codeDeSession) endOf(s[cds]);
+	dureeTotaleInstance == max (cs in codeDeSession) finSession[cs];//la duree totale de l'instance est egal a la fin
+																	//de la derniere session
 	
-	//gestion du fait qu'une session doi se derouler apres une autre avec un ecart de donnée
+	//fin == duree +debut 
+	forall(s in sessions){
+		finSession[s.idSession]==debutSession[s.idSession]+s.duree;//la fin d'une session est defini par le debut + la duree
+	}
+	
+	//gestion du fait qu'une session doit se derouler apres une autre avec un ecart de duree
 	forall (p in precedes){
-		endBeforeStart(s[p.idSession1],s[p.idSession2]);
-	}	
+		debutSession[p.idSession2]>=finSession[p.idSession1]+p.duree;
+	}
+	//session ne peux pas s'etendre sur plusieurs jours
+	forall(s in sessions){
+		debutSession[s.idSession]div nbCreneauxMaxParJour == finSession[s.idSession]div nbCreneauxMaxParJour;
+	}
 	
-	/*//un intervenant ne peux pas participer à deux sessions en meme temps
+	//gestion des indisponibilité
+	forall (s in sessions){
+		forall(i in sessionIndisponible[s.idSession]){
+			debutSession[s.idSession]>i || finSession[s.idSession]<i;
+		}
+	}
+	//un intervenant ne peux pas participer à deux sessions en meme temps
 	forall(s1 in sessions,s2 in sessions : s1.idSession!=s2.idSession){
 		forall(i1 in intervenantsDeSession[s1.idSession]){
 			forall(i2 in intervenantsDeSession[s2.idSession]){
 				if(i1==i2){
-					finSession[s1.idSession]<debutSession[s2.idSession] || finSession[s2.idSession]<debutSession[s1.idSession];
+					finSession[s2.idSession]<debutSession[s1.idSession] || finSession[s1.idSession]<debutSession[s2.idSession];
 				}
 			}
-		}
-	
-	}*/
+		}	
+	}
 
 }
 
@@ -200,6 +235,10 @@ execute{
 /************************************************************************
 * PostTraitement
 ************************************************************************/
-
-/* TODO */
+execute{
+	writeln(dureeTotaleInstance);
+	var resultat = new Array();
+	resultat[resultat.length] = nom+"_planning1.res";
+	ecrireResultat();
+}
 

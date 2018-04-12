@@ -155,9 +155,10 @@ function getIntervenants(blocs, listbloc, listIntervenants){
 					}
 				}
 		}
-	}
-	
-	
+	}	
+}
+
+function ecrireResultat(){
 	
 	
 }
