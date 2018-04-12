@@ -101,12 +101,16 @@ function getSessions(donnees, sessions, listSessions){
 	
 }
 function getPrecedes(donnees, precedes){
-	for (var i = 0; i<donnees.length;i++){	
-			if(donnees[i][0] == "precedes") {
-				precedes.add(donnees[i][1],donnees[i][2],parseInt(donnee[i][3]));				
-			}
-	}
+	for (var i = 0; i<donnees.length;i++){
+			if(donnees[i][0] == "precede") {
+			  if(donnees[i].length>3){
+			     precedes.add(donnees[i][1],donnees[i][2],parseInt(donnees[i][3]));			
+			  }else{
+			  	precedes.add(donnees[i][1],donnees[i][2],0);				
+			  }
+	    }
 	
+  }
 }
 function getIndisponibles(donnees, indisponibles, listJours, listCreneaux){//obliger de mettre list jours et list creneaux car sans je n'arrivais pas à retourner le tuple
 	var cpt =0.

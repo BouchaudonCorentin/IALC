@@ -66,7 +66,7 @@ execute {
 	getBlocs(donnees,blocs,blocsIn);
     getSessions(donnees, sessions,listSessions);
 	getPrecedes(donnees, precedes);
-	getIndisponibles(donnees, indisponibles,listJours,listCrenaux);
+	getIndisponibles(donnees, indisponibles,listJours,listCrenaux);	
 }
 
 /************************************************************************
@@ -77,12 +77,16 @@ execute {
 {string} codeDeBloc = {b.idBloc | b in blocs};
 int dureeMinimaleSession = min(s in sessions)s.duree;
 int dureeMaximaleSession = max(s in sessions)s.duree;
+int sommeDureeSessions = sum(s in sessions)s.duree;//duree maximale du Projet
+int duree[codeDeSession] =[s.idSession : s.duree  | s in sessions];
+
+
+
 {string} intervenantsDuBloc[codeDeBloc];//recupere tout les intervenants interne au bloc
 {string} blocDuBloc[codeDeBloc];//contient les blocs se situant dans le bloc
 {string} temp1[codeDeBloc]; // permet la modification de intervenantsDuBloc
 {string} intervenantsDeSession[codeDeSession];//recupere tout les intervenants à la session
 execute{
-
 	/*********************************************************
 	//intervenantsDuBloc récupere tout les intervenants par bloc 
 	**********************************************************/
@@ -145,41 +149,53 @@ execute{
 			}
 		}
 	}
-	for(s in intervenantsDeSession){
-		writeln("///////",s);
-		for( i in intervenantsDeSession[s]){
-			write(i,"   ");
-		}
-		writeln();
-		writeln("*********");
-	}
-}
-	
-/*Déclaration des structures de données utiles pour faciliter
-l'expression du modèle
-*/
-
+}	
 
 /************************************************************************
 * Variables de décision
 ************************************************************************/
 
-/*dvar int debutSession[codeSession] in 0..(nbJoursMax*nbCreneauxMaxParJour) - dureeMinimaleSession;
-dvar int finSession[codeSession] in dureeMinimaleSession..nbJoursMax*nbCreneauxMaxParJour;
-dvar int dureeTotaleSession in dureeMaximaleSession..nbJoursMax*nbCreneauxMaxParJour;*/
-
+dvar int dureeTotaleInstance in dureeMaximaleSession..nbJoursMax*nbCreneauxMaxParJour;
+dvar interval s[cs in codeDeSession] in 0..sommeDureeSessions size duree[cs];
 /************************************************************************
 * Contraintes du modèle 					(NB : ne peut être mutualisé)
 ************************************************************************/
 
-/* TODO */
+minimize 
+	dureeTotaleInstance;
+	
+subject to {
+
+	dureeTotaleInstance == max (cds in codeDeSession) endOf(s[cds]);
+	
+	//gestion du fait qu'une session doi se derouler apres une autre avec un ecart de donnée
+	forall (p in precedes){
+		endBeforeStart(s[p.idSession1],s[p.idSession2]);
+	}	
+	
+	/*//un intervenant ne peux pas participer à deux sessions en meme temps
+	forall(s1 in sessions,s2 in sessions : s1.idSession!=s2.idSession){
+		forall(i1 in intervenantsDeSession[s1.idSession]){
+			forall(i2 in intervenantsDeSession[s2.idSession]){
+				if(i1==i2){
+					finSession[s1.idSession]<debutSession[s2.idSession] || finSession[s2.idSession]<debutSession[s1.idSession];
+				}
+			}
+		}
+	
+	}*/
+
+}
 
 
 /************************************************************************
 * Contrôle de flux  (si besoin)
 ************************************************************************/
-
-/* TODO */
+execute{
+	cp.param.searchType="DepthFirst";
+	cp.param.workers=1;
+	cp.param.logVerbosity="Quiet";
+}
 
 /************************************************************************
 * PostTraitement
