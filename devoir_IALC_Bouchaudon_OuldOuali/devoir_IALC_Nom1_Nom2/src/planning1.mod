@@ -85,7 +85,7 @@ int dureeMaximaleSession = max(s in sessions)s.duree;
 {string} temp1[codeDeBloc]; // permet la modification de intervenantsDuBloc
 {string} intervenantsDeSession[codeDeSession];//recupere tout les intervenants à la session
 {int} sessionIndisponible[codeDeSession];
-execute{
+execute{	
 	/*********************************************************
 	//intervenantsDuBloc récupere tout les intervenants par bloc 
 	**********************************************************/
@@ -178,7 +178,7 @@ execute{
 ************************************************************************/
 
 dvar int dureeTotaleInstance in dureeMaximaleSession..nbJoursMax*nbCreneauxMaxParJour;
-dvar int debutSession[codeDeSession] in 0..(nbJoursMax*nbCreneauxMaxParJour) - dureeMinimaleSession;
+dvar int debutSession[codeDeSession] in 0..((nbJoursMax*nbCreneauxMaxParJour) - dureeMinimaleSession);
 dvar int finSession[codeDeSession] in dureeMinimaleSession..nbJoursMax*nbCreneauxMaxParJour;
 /************************************************************************
 * Contraintes du modèle 					(NB : ne peut être mutualisé)
@@ -193,32 +193,28 @@ constraints {
 	forall(s in sessions){
 		finSession[s.idSession]==debutSession[s.idSession]+s.duree;//la fin d'une session est defini par le debut + la duree
 	}
-	
-	//gestion du fait qu'une session doit se derouler apres une autre avec un ecart de duree
-	forall (p in precedes){
-		debutSession[p.idSession2]>=finSession[p.idSession1]+p.duree;
-	}
 	//session ne peux pas s'etendre sur plusieurs jours
 	forall(s in sessions){
-		debutSession[s.idSession]div nbCreneauxMaxParJour == finSession[s.idSession]div nbCreneauxMaxParJour;
+		(debutSession[s.idSession]div nbCreneauxMaxParJour) == (finSession[s.idSession]div nbCreneauxMaxParJour);
+	}
+	//gestion de session 1 precede session 2
+	forall (p in precedes){
+		debutSession[p.idSession2]>=(((finSession[p.idSession1]div nbCreneauxMaxParJour+1)*nbCreneauxMaxParJour)+(p.duree*nbCreneauxMaxParJour));
+	}
+	//un intervenant ne peux pas participer à deux sessions en meme temps
+	forall(s1 in sessions,s2 in sessions : s1.idSession!=s2.idSession){
+		forall(i1 in intervenantsDeSession[s1.idSession],i2 in intervenantsDeSession[s2.idSession]: i1==i2){
+					finSession[s2.idSession]<debutSession[s1.idSession] || finSession[s1.idSession]<debutSession[s2.idSession];
+				}
+		}	
 	}
 	
-	//gestion des indisponibilité
+	/*//gestion des indisponibilité
 	forall (s in sessions){
 		forall(i in sessionIndisponible[s.idSession]){
 			debutSession[s.idSession]>i || finSession[s.idSession]<i;
 		}
-	}
-	//un intervenant ne peux pas participer à deux sessions en meme temps
-	forall(s1 in sessions,s2 in sessions : s1.idSession!=s2.idSession){
-		forall(i1 in intervenantsDeSession[s1.idSession]){
-			forall(i2 in intervenantsDeSession[s2.idSession]){
-				if(i1==i2){
-					finSession[s2.idSession]<debutSession[s1.idSession] || finSession[s1.idSession]<debutSession[s2.idSession];
-				}
-			}
-		}	
-	}
+	}*/
 
 }
 
