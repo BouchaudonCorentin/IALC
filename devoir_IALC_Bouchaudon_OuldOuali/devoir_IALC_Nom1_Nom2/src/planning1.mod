@@ -85,6 +85,8 @@ int dureeMaximaleSession = max(s in sessions)s.duree;
 {string} temp1[codeDeBloc]; // permet la modification de intervenantsDuBloc
 {string} intervenantsDeSession[codeDeSession];//recupere tout les intervenants à la session
 {int} sessionIndisponible[codeDeSession];
+{string}intervenants;
+{string} sessionIntervenant[intervenants];
 execute{	
 	/*********************************************************
 	//intervenantsDuBloc récupere tout les intervenants par bloc 
@@ -170,6 +172,23 @@ execute{
 				}
 			}
 		}
+	}
+	//recupere tout les intervenants de l'instance
+	for(s in intervenantsDeSession){
+		for(i in intervenantsDeSession[s]){
+			intervenants.add(i);
+		}
+	}
+	//donne toute les sessions auquel participe l'intervenant
+	
+	for (s in intervenantsDeSession){
+		for (i in intervenantsDeSession[s]){
+			for (i2 in intervenants){
+				if(i==i2){
+					sessionIntervenant[i].add(s);
+				}
+			}
+		}
 	}	
 }	
 
@@ -183,8 +202,9 @@ dvar int finSession[codeDeSession] in dureeMinimaleSession..nbJoursMax*nbCreneau
 /************************************************************************
 * Contraintes du modèle 					(NB : ne peut être mutualisé)
 ************************************************************************/
-
-constraints {
+minimize 
+	dureeTotaleInstance;
+subject to {
 
 	dureeTotaleInstance == max (cs in codeDeSession) finSession[cs];//la duree totale de l'instance est egal a la fin
 																	//de la derniere session
@@ -199,23 +219,19 @@ constraints {
 	}
 	//gestion de session 1 precede session 2
 	forall (p in precedes){
-		debutSession[p.idSession2]>=(((finSession[p.idSession1]div nbCreneauxMaxParJour+1)*nbCreneauxMaxParJour)+(p.duree*nbCreneauxMaxParJour));
+		debutSession[p.idSession2]>=((((finSession[p.idSession1]div nbCreneauxMaxParJour)+p.duree)*nbCreneauxMaxParJour));
 	}
-	//un intervenant ne peux pas participer à deux sessions en meme temps
-	forall(s1 in sessions,s2 in sessions : s1.idSession!=s2.idSession){
-		forall(i1 in intervenantsDeSession[s1.idSession],i2 in intervenantsDeSession[s2.idSession]: i1==i2){
-					finSession[s2.idSession]<debutSession[s1.idSession] || finSession[s1.idSession]<debutSession[s2.idSession];
-				}
-		}	
-	}
-	
-	/*//gestion des indisponibilité
+	forall (i in intervenants){
+		forall(s1 in sessionIntervenant[i],s2 in sessionIntervenant[i]: s1!=s2){
+			debutSession[s1]>=finSession[s2] || debutSession[s2]>=finSession[s1];
+		}
+	}	
+	//gestion des indisponibilité
 	forall (s in sessions){
 		forall(i in sessionIndisponible[s.idSession]){
-			debutSession[s.idSession]>i || finSession[s.idSession]<i;
+			debutSession[s.idSession]>=i || finSession[s.idSession]<=i;
 		}
-	}*/
-
+	}
 }
 
 
