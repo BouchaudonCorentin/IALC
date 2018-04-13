@@ -158,7 +158,10 @@ function getIntervenants(blocs, listbloc, listIntervenants){
 	}	
 }
 
-function ecrireResultat(){
-	
-	
+function ecrireResultat(resultat){
+	var fichier = new IloOplOutputFile("../resultats/" + resultat[0]);
+	for (var i = 0; i < resultat.length; i++){
+		fichier.writeln(resultat[i]);
+	}
+	fichier.close();	
 }

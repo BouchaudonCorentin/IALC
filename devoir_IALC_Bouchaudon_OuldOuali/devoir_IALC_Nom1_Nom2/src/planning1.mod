@@ -251,6 +251,13 @@ execute{
 	writeln(dureeTotaleInstance);
 	var resultat = new Array();
 	resultat[resultat.length] = nom+"_planning1.res";
-	ecrireResultat();
+	for (s in codeDeSession){
+		resultat[resultat.length] = "planning <"+s+"> <"+parseInt(debutSession[s]/ nbCreneauxMaxParJour)+"> <"+(parseInt(debutSession[s])-(parseInt(debutSession[s]/ nbCreneauxMaxParJour)*nbCreneauxMaxParJour)+1)+"> ";
+	}	
+	for(var i =0; i<resultat.length;i++){
+		writeln(resultat[i]);
+	}
+	
+	ecrireResultat(resultat);
 }
 
