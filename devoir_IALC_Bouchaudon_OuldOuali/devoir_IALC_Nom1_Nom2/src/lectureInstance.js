@@ -165,3 +165,30 @@ function ecrireResultat(resultat){
 	}
 	fichier.close();	
 }
+
+
+function getSalles(donnees, salles){
+	var cpt =0;
+	for (var i = 0; i<donnees.length;i++){
+		if(donnees[i][0] == "salle") {
+			salles.add(cpt+1,donnees[i][1],parseInt(donnees[i][2]));	
+			cpt++;
+	    }	
+	}	
+}
+
+function getBesoins(donnees,besoinsSpecifiques,listBesoinsSpecifiques){
+	var cpt=0;
+	for (var i = 0; i<donnees.length;i++){	
+		if(donnees[i][0] == "besoinSpecifique") {
+			for (j = 2; j<donnees.length;j++){
+				if(donnees[i][j]!=null){
+					listBesoinsSpecifiques[cpt].add(donnees[i][j]);
+				}
+			}
+			besoinsSpecifiques.add(donnees[i][1],listBesoinsSpecifiques[cpt]);
+			cpt++;
+		}
+	}
+	
+}
