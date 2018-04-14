@@ -235,27 +235,17 @@ execute{
 		}
 		nbPersonnesSessions[s.idSession]=cpt;
 	}
-	
-	/*********************************************************
-	//gestion de l'indisponibilité des salles
-	**********************************************************/ 
-	for(s in salles){
-		for(indi in indisponibles){
-				if(indi.idIntervenant==s.idSalle){
-					for(j in indi.jours){
-						for(k in indi.creneaux){
-							if(k==0){// pas de creneaux en particulier
-								for (var creneau =0 ; creneau<nbCreneauxMaxParJour; creneau++){
-									indisponibiliteSalle[s.idSalle].add(((j-1)*nbCreneauxMaxParJour)+creneau);
-								}
-							}else{
-									indisponibiliteSalle[s.idSalle].add(((j-1)*nbCreneauxMaxParJour)+(k-1));
-							}							
-						}
-					}
-				}
+	for (i in nbPersonnesSessions){
+		writeln(i," ", nbPersonnesSessions[i]);
+		
+	}
+	for ( i in indisponibiliteSalle){
+		write(i,": ");
+		for (j in indisponibiliteSalle[i]){
+			write(j,"   ");
 		}
-	}	
+		writeln();
+	}
 }	
 
 /************************************************************************
@@ -318,10 +308,12 @@ subject to {
 	}	
 	//deux sessions ne peuvent pas se derouler dans la même piece en même temps
 	forall(s1 in sessions,s2 in sessions :s1!=s2){
-		if(salleSession[s1.idSession]==salleSession[s2.idSession]){
-			debutSession[s1.idSession]>finSession[s2.idSession] || debutSession[s2.idSession]>finSession[s1.idSession];
-		}		
+		(salleSession[s1.idSession]==salleSession[s2.idSession]&&(debutSession[s1.idSession]>=finSession[s2.idSession]|| debutSession[s2.idSession]>=finSession[s1.idSession]))
+		||(salleSession[s1.idSession]!=salleSession[s2.idSession]);
 	}
+
+	
+	
 	
 }
 
