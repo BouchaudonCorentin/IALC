@@ -236,15 +236,24 @@ execute{
 		nbPersonnesSessions[s.idSession]=cpt;
 	}
 	for (i in nbPersonnesSessions){
-		writeln(i," ", nbPersonnesSessions[i]);
-		
+		writeln (i,"  ",nbPersonnesSessions[i]);
 	}
-	for ( i in indisponibiliteSalle){
-		write(i,": ");
-		for (j in indisponibiliteSalle[i]){
-			write(j,"   ");
+	for(cds in codeDeSalle){
+		for(i in indisponibles){
+			if(cds == i.idIntervenant){
+				for(j in i.jours){
+						for(k in i.creneaux){
+							if(k==0){// pas de creneaux en particulier
+								for (var creneau =0 ; creneau<nbCreneauxMaxParJour; creneau++){
+									indisponibiliteSalle[cds].add(((j-1)*nbCreneauxMaxParJour)+creneau);
+								}
+							}else{
+								indisponibiliteSalle[cds].add(((j-1)*nbCreneauxMaxParJour)+(k-1));
+							}							
+						}
+				}
+			}
 		}
-		writeln();
 	}
 }	
 
@@ -288,6 +297,8 @@ subject to {
 			debutSession[s.idSession]>=i || finSession[s.idSession]<=i;
 		}
 	}
+	
+	//////////////////////////// Gestion des Salles//////////////////////////////////
 	//une salle ne peux pas depasser un certain nombre d'intervenant
 	forall(s in sessions){
 		forall(sa in salles){
@@ -311,7 +322,16 @@ subject to {
 		(salleSession[s1.idSession]==salleSession[s2.idSession]&&(debutSession[s1.idSession]>=finSession[s2.idSession]|| debutSession[s2.idSession]>=finSession[s1.idSession]))
 		||(salleSession[s1.idSession]!=salleSession[s2.idSession]);
 	}
+	
+	//respect des indisponiilité des salles
 
+	forall(se in sessions){
+		forall (sa in salles){
+			forall (i in indisponibiliteSalle[sa.idSalle]){
+				(salleSession[se.idSession]==sa.numSalle && (debutSession[se.idSession]>i || finSession[se.idSession]<i))|| salleSession[se.idSession]!=sa.numSalle;
+			}
+		}
+	}
 	
 	
 	
@@ -336,7 +356,11 @@ execute{
 	var resultat = new Array();
 	resultat[resultat.length] = nom+"_planning2.res";
 	for (s in codeDeSession){
-		resultat[resultat.length] = "planning <"+s+"> <"+parseInt(debutSession[s]/ nbCreneauxMaxParJour)+"> <"+(parseInt(debutSession[s])-(parseInt(debutSession[s]/ nbCreneauxMaxParJour)*nbCreneauxMaxParJour)+1)+"> <"+salleSession[s]+">" ;
+		for(sa in salles ){ 
+			if(sa.numSalle==salleSession[s]){
+				resultat[resultat.length] = "planning <"+s+"> <"+parseInt(debutSession[s]/ nbCreneauxMaxParJour)+"> <"+(parseInt(debutSession[s])-(parseInt(debutSession[s]/ nbCreneauxMaxParJour)*nbCreneauxMaxParJour)+1)+"> <"+sa.idSalle+">" ;
+			}
+		}
 	}	
 	for(var i =0; i<resultat.length;i++){
 		writeln(resultat[i]);

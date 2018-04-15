@@ -179,8 +179,8 @@ execute{
 			intervenants.add(i);
 		}
 	}
-	//donne toute les sessions auquel participe l'intervenant
 	
+	//donne toute les sessions auquel participe l'intervenant	
 	for (s in intervenantsDeSession){
 		for (i in intervenantsDeSession[s]){
 			for (i2 in intervenants){
@@ -189,7 +189,7 @@ execute{
 				}
 			}
 		}
-	}	
+	}
 }	
 
 /************************************************************************
@@ -221,6 +221,7 @@ subject to {
 	forall (p in precedes){
 		debutSession[p.idSession2]>=((((finSession[p.idSession1]div nbCreneauxMaxParJour)+p.duree)*nbCreneauxMaxParJour));
 	}
+	//un intervenant ne peux pas participer à deux sessions en meme temps
 	forall (i in intervenants){
 		forall(s1 in sessionIntervenant[i],s2 in sessionIntervenant[i]: s1!=s2){
 			debutSession[s1]>=finSession[s2] || debutSession[s2]>=finSession[s1];
@@ -229,7 +230,7 @@ subject to {
 	//gestion des indisponibilité
 	forall (s in sessions){
 		forall(i in sessionIndisponible[s.idSession]){
-			debutSession[s.idSession]>=i || finSession[s.idSession]<=i;
+			debutSession[s.idSession]>i || finSession[s.idSession]<i;
 		}
 	}
 }
