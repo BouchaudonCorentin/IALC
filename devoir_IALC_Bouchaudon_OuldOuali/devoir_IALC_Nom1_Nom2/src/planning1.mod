@@ -230,7 +230,7 @@ subject to {
 	//gestion des indisponibilité
 	forall (s in sessions){
 		forall(i in sessionIndisponible[s.idSession]){
-			debutSession[s.idSession]>i || finSession[s.idSession]<i;
+			debutSession[s.idSession]>=i || finSession[s.idSession]<=i;
 		}
 	}
 }

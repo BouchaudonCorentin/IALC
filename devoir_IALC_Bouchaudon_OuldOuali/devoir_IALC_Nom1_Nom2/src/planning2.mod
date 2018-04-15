@@ -235,9 +235,6 @@ execute{
 		}
 		nbPersonnesSessions[s.idSession]=cpt;
 	}
-	for (i in nbPersonnesSessions){
-		writeln (i,"  ",nbPersonnesSessions[i]);
-	}
 	for(cds in codeDeSalle){
 		for(i in indisponibles){
 			if(cds == i.idIntervenant){
@@ -352,7 +349,6 @@ execute{
 * PostTraitement
 ************************************************************************/
 execute{
-	writeln(dureeTotaleInstance);
 	var resultat = new Array();
 	resultat[resultat.length] = nom+"_planning2.res";
 	for (s in codeDeSession){
@@ -362,10 +358,6 @@ execute{
 			}
 		}
 	}	
-	for(var i =0; i<resultat.length;i++){
-		writeln(resultat[i]);
-	}
-	
 	ecrireResultat(resultat);
 }
 

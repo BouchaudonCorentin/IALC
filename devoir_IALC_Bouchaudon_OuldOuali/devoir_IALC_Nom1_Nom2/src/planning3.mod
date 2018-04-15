@@ -66,6 +66,16 @@ tuple BesoinSpecifique{
 {BesoinSpecifique}besoinsSpecifiques;
 {string}listBesoinsSpecifiques[0..10];
 
+tuple Indemnite {
+	int indemniteJournaliere;
+	int indemniteDeplacement;
+	int indemniteSejour;
+	{string}personnels;
+}
+{Indemnite}indemnites;
+{string} listPersonnelsIndemnites[0..30];
+
+
 execute {  
 	includeScript("lectureInstance.js");	// Permet d'inclure un fichier de script
 	// TODO - appeler la fonction que vous aurez définie et 
@@ -84,6 +94,7 @@ execute {
 	getIndisponibles(donnees, indisponibles,listJours,listCrenaux);		
 	getSalles(donnees,salles);
 	getBesoins(donnees,besoinsSpecifiques,listBesoinsSpecifiques);
+	getIndemnites(donnees,indemnites,listPersonnelsIndemnites);
 }
 
 /************************************************************************
@@ -96,7 +107,7 @@ execute {
 int dureeMinimaleSession = min(s in sessions)s.duree;
 int dureeMaximaleSession = max(s in sessions)s.duree;
 int nbSalles = max (s in salles)s.numSalle;
-
+int coutMaximal;
 
 
 {string} intervenantsDuBloc[codeDeBloc];//recupere tout les intervenants interne au bloc
@@ -235,9 +246,8 @@ execute{
 		}
 		nbPersonnesSessions[s.idSession]=cpt;
 	}
-	for (i in nbPersonnesSessions){
-		writeln (i,"  ",nbPersonnesSessions[i]);
-	}
+	
+	//Indisponibilté des salles
 	for(cds in codeDeSalle){
 		for(i in indisponibles){
 			if(cds == i.idIntervenant){
@@ -255,24 +265,42 @@ execute{
 			}
 		}
 	}
+	//calcul du max d'indemnité possible meme si avoir ce cout est impossible
+	coutMaximal=0;
+	for(s in sessions){
+		for (i in intervenantsDeSession[s.idSession]){
+			for (ind in indemnites){
+				for(inter in ind.personnels){
+					if(inter == i){
+						if(ind.indemniteDeplacement>=ind.indemniteSejour){
+							coutMaximal = (coutMaximal+ind.indemniteJournaliere+ind.indemniteDeplacement);
+						}else{
+							coutMaximal = (coutMaximal+ind.indemniteJournaliere+ind.indemniteSejour);
+						}
+					}
+				}
+			}
+		}
+	}
+	
 }	
 
 /************************************************************************
 * Variables de décision
 ************************************************************************/
 
-dvar int dureeTotaleInstance in dureeMaximaleSession..nbJoursMax*nbCreneauxMaxParJour;
+dvar int couttotal in 0..coutMaximal;
 dvar int debutSession[codeDeSession] in 0..((nbJoursMax*nbCreneauxMaxParJour) - dureeMinimaleSession);
 dvar int finSession[codeDeSession] in dureeMinimaleSession..nbJoursMax*nbCreneauxMaxParJour;
 dvar int salleSession[codeDeSession] in 1..nbSalles; 
+dvar int indemniteParSession[intervenants][codeDeSession] in 0..coutMaximal;
 /************************************************************************
 * Contraintes du modèle 					(NB : ne peut être mutualisé)
 ************************************************************************/
 minimize 
-	dureeTotaleInstance;
+	couttotal;
 subject to {
-	dureeTotaleInstance == max (cs in codeDeSession) finSession[cs];//la duree totale de l'instance est egal a la fin
-																	//de la derniere session	
+	//////////////////////////// Gestion Employés et jours/créneaux//////////////////////////////////
 	//fin == duree +debut 
 	forall(s in sessions){
 		finSession[s.idSession]==debutSession[s.idSession]+s.duree;//la fin d'une session est defini par le debut + la duree
@@ -332,7 +360,25 @@ subject to {
 			}
 		}
 	}
+	//Gestion des Indemnités
+	couttotal == sum(i in intervenants, cds in codeDeSession) indemniteParSession[i][cds];
 	
+	//calcul des couts
+	forall(i in intervenants){
+		forall(s1 in sessionIntervenant[i],s2 in sessionIntervenant[i] :s1!=s2){
+			forall (indem in indemnites){
+				forall(i2 in indem.personnels){
+					if(i==i2){
+						((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)==1 &&  indemniteParSession[i][s1] >= indem.indemniteJournaliere+indem.indemniteSejour)
+						||((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)>1 &&  indemniteParSession[i][s1] >= indem.indemniteJournaliere+indem.indemniteDeplacement)
+						||((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)==0 && indemniteParSession[i][s1] >= indem.indemniteJournaliere)
+						||((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)<0);
+					}
+				}
+			}
+			
+		}
+	}
 	
 	
 }
@@ -352,9 +398,9 @@ execute{
 * PostTraitement
 ************************************************************************/
 execute{
-	writeln(dureeTotaleInstance);
+	writeln(couttotal);
 	var resultat = new Array();
-	resultat[resultat.length] = nom+"_planning2.res";
+	resultat[resultat.length] = nom+"_planning3.res";
 	for (s in codeDeSession){
 		for(sa in salles ){ 
 			if(sa.numSalle==salleSession[s]){
@@ -362,6 +408,7 @@ execute{
 			}
 		}
 	}	
+	resultat[resultat.length]="couttotal"+couttotal
 	for(var i =0; i<resultat.length;i++){
 		writeln(resultat[i]);
 	}

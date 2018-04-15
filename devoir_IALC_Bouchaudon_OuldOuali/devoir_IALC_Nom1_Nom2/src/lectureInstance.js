@@ -192,3 +192,18 @@ function getBesoins(donnees,besoinsSpecifiques,listBesoinsSpecifiques){
 	}
 	
 }
+
+function getIndemnites(donnees, indemnites, listPersonnelsIndemnites){
+	var cpt =0;
+	for(var i=0;i<donnees.length;i++){
+		if(donnees[i][0]=="indemnite"){
+			for(var j =4;j <donnees[i].length;j++){
+				if(donnees[i][j]!=null){
+					listPersonnelsIndemnites[cpt].add(donnees[i][j]);
+				}
+			}
+			indemnites.add(donnees[i][1],donnees[i][2],donnees[i][3],listPersonnelsIndemnites[cpt]);
+			cpt++			
+		}		
+	}	
+}
