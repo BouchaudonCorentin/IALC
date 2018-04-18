@@ -347,7 +347,7 @@ dvar int finSession[codeDeSession] in dureeMinimaleSession..nbJoursMax*nbCreneau
 dvar int salleSession[codeDeSession] in 1..nbSalles; 
 
 //tableau 2D indexé par les intervenants et les codes de sessions chaque case recupere les indemnités de chaque intervenant pour chaque session
-dvar int indemniteParSession[intervenants][codeDeSession] in 0..coutMaximal;
+dvar int indemniteParPersonneEtSession[intervenants][codeDeSession] in 0..coutMaximal;
 
 
 
@@ -425,7 +425,7 @@ subject to {
 	//////////////////////////// Gestion des Indemnités//////////////////////////////////
 	
 	//couttotal récupère la somme de toutes les indemnités
-	couttotal == sum(i in intervenants, cds in codeDeSession) indemniteParSession[i][cds];
+	couttotal == sum(i in intervenants, cds in codeDeSession) indemniteParPersonneEtSession[i][cds];
 	
 	//calcul des couts pour chaque intervenants et chaque sessions
 	forall(i in intervenants){
@@ -433,9 +433,9 @@ subject to {
 			forall (indem in indemnites){
 				forall(i2 in indem.personnels){
 					if(i==i2){
-						((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)==1 &&  indemniteParSession[i][s1] >= indem.indemniteJournaliere+indem.indemniteSejour)
-						||((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)>1 &&  indemniteParSession[i][s1] >= indem.indemniteJournaliere+indem.indemniteDeplacement)
-						||((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)==0 && indemniteParSession[i][s1] >= indem.indemniteJournaliere)
+						((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)==1 &&  indemniteParPersonneEtSession[i][s1] >= indem.indemniteJournaliere+indem.indemniteSejour)
+						||((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)>1 &&  indemniteParPersonneEtSession[i][s1] >= indem.indemniteJournaliere+indem.indemniteDeplacement)
+						||((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)==0 && indemniteParPersonneEtSession[i][s1] >= indem.indemniteJournaliere)
 						||((debutSession[s1]div nbCreneauxMaxParJour)-(debutSession[s2]div nbCreneauxMaxParJour)<0);
 					}
 				}

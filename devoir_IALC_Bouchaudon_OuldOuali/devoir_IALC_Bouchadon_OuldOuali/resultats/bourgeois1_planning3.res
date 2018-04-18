@@ -32,3 +32,4 @@ planning <filage1> <17> <1> <grandeScene>
 planning <filage2> <19> <1> <grandeScene>
 planning <filage3> <20> <1> <grandeScene>
 planning <generale> <21> <1> <grandeScene>
+couttotal <41355>
